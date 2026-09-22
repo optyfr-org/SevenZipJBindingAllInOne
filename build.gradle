@@ -5,6 +5,13 @@ plugins {
 	id "de.undercouch.download" version "4.1.1"
 }
 
+apply plugin: 'java'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 repositories {
 	jcenter()
 }
@@ -47,10 +54,10 @@ task makeProps(dependsOn: downloadSevenZipJBindingPlatforms) {
 		})
 		def props = new Properties()
 		def gidx = 0;
-		sevenzip_dirs.eachWithIndex{ item, idx -> {
+		sevenzip_dirs.eachWithIndex{ item, idx -> 
 			props.setProperty('platform.'+(idx+1), item);
 			gidx = idx+1;
-		}}
+		}
 		props.setProperty('platform.'+(gidx+1), "Linux-aarch64");
 		def propertyFile = file "$buildDir/sevenzipjbinding-platforms.properties"
 		propertyFile.withWriter { props.store(it, null) }
@@ -92,7 +99,7 @@ publishing {
     repositories {
         maven {
             name = "sevenzipjbinding"
-            url = uri("https://maven.pkg.github.com/optyfr/sevenzipjbinding")
+            url = uri("https://maven.pkg.github.com/optyfr-org/SevenZipJBindingAllInOne")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
@@ -102,13 +109,13 @@ publishing {
     publications {
         gpr(MavenPublication) {
             artifactId = "sevenzipjbindingallinone"
-            groupId= "com.github.optyfr"
+            groupId= "com.github.optyfr-org"
             artifact ("$buildDir/libs/sevenzipjbinding-" + SevenZipJBindingVersion + '.jar')
             version="1.1"
             pom {
                 name = 'SevenZipJBindingAllInOne'
                 description = 'SevenZipJBinding multi-arch bundle'
-                url = 'https://github.com/optyfr/SevenZipJBindingAllInOne'
+                url = 'https://github.com/optyfr-org/SevenZipJBindingAllInOne'
                 developers {
                     developer {
                         id = 'optyfr'
@@ -117,9 +124,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/optyfr/SevenZipJBindingAllInOne.git'
-                    developerConnection = 'scm:git:git@github.com:optyfr/SevenZipJBindingAllInOne.git'
-                    url = 'https://github.com/optyfr/SevenZipJBindingAllInOne.git'
+                    connection = 'scm:git:git://github.com/optyfr-org/SevenZipJBindingAllInOne.git'
+                    developerConnection = 'scm:git:git@github.com:optyfr-org/SevenZipJBindingAllInOne.git'
+                    url = 'https://github.com/optyfr-org/SevenZipJBindingAllInOne.git'
                 }
             }
         }
