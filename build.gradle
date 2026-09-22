@@ -91,7 +91,11 @@ task makeJar(type:Jar, dependsOn: extract) {
 		archiveFileName = 'sevenzipjbinding-' + SevenZipJBindingVersion + '.jar'
 }
 
-build.dependsOn makeJar
+assemble.dependsOn makeJar
+
+jar {
+	enabled = false
+}
 
 apply plugin: 'maven-publish'
 
@@ -109,9 +113,9 @@ publishing {
     publications {
         gpr(MavenPublication) {
             artifactId = "sevenzipjbindingallinone"
-            groupId= "com.github.optyfr-org"
+            groupId = (project.group as String) ?: 'com.github.optyfr-org'
             artifact ("$buildDir/libs/sevenzipjbinding-" + SevenZipJBindingVersion + '.jar')
-            version="1.1"
+            version = project.version == 'unspecified' ? (System.getenv('VERSION') ?: '1.1') : project.version.toString()
             pom {
                 name = 'SevenZipJBindingAllInOne'
                 description = 'SevenZipJBinding multi-arch bundle'
@@ -132,3 +136,6 @@ publishing {
         }
     }
 }
+
+tasks.withType(PublishToMavenLocal).configureEach { dependsOn makeJar }
+tasks.withType(PublishToMavenRepository).configureEach { dependsOn makeJar }
